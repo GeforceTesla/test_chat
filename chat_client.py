@@ -13,13 +13,17 @@ def parser():
                             formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('name',
                         help='The name for chat')
+    parser.add_argument('link',
+                        help='The link for chat')
     return parser
 
 def get_latest_chat_loop():
+    global latest_count
+    global link
+
     while True:
-        time.sleep(3)
-        req = requests.get("http://127.0.0.1:8888/")
-        global latest_count
+        time.sleep(1)
+        req = requests.get("http://" + link)
         get_count = req.json["count"]
         if get_count > latest_count:
             latest_count = get_count
@@ -37,7 +41,7 @@ def post_chat_stuff():
         inputs = raw_input()
         print "\033[A                             \033[A"
         payload = {"id": identity, "data": str(inputs)}
-        req = requests.post("http://127.0.0.1:8888/", data=payload) 
+        req = requests.post("http://" + link, data=payload) 
 
 if __name__ == "__main__":
     thread = threading.Thread(target=get_latest_chat_loop)
@@ -45,5 +49,8 @@ if __name__ == "__main__":
     thread.start()
 
     global identity
-    identity = parser().parse_args().name
+    global link
+    args = parser().parse_args()
+    identity = args.name
+    link = args.link
     post_chat_stuff()
