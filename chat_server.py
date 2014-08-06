@@ -2,11 +2,13 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+
 def server_init():
     global chat_data
     chat_data = {}
     global count
     count = 0
+
 
 def server_run():
     server_init()
